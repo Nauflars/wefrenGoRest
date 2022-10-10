@@ -24,14 +24,14 @@ class UserControllerTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
     }
 
-   /*  public function testCreateUserOK(): void 
+     public function testCreateUserOK(): void 
     {
        $response = static::createClient()->request(
             'POST',
             '/user',[
                 'json' => [
-                    'name' => 'testCreate',
-                    'email' => 'testCreate9@example.com',
+                    'name' => 'test',
+                    'email' => 'testCreateUser@example.com',
                     'gender' => 'male',
                     'status' => 'active',
                 ],
@@ -42,7 +42,7 @@ class UserControllerTest extends ApiTestCase
         );
         $this->assertResponseIsSuccessful();
         
-    }*/
+    }
 
         public function testCreateUserKO(): void 
     {

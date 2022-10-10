@@ -5,7 +5,6 @@ namespace App\Users\Infrastructure\Repository;
 use App\Users\Domain\Entity\User;
 use App\Users\Domain\Repository\UserRepositoryInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -59,7 +58,6 @@ class UserRepository implements UserRepositoryInterface
                 throw new HttpException($statusCode, $message);
          }
 
-
         $responseJson = $response->getContent();
         $responseData = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
 
@@ -93,7 +91,7 @@ class UserRepository implements UserRepositoryInterface
     }
     public function findAll() 
     {
-
+        
     }
 
 }
