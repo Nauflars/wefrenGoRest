@@ -10,6 +10,7 @@ use App\Users\Domain\Entity\User;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserRepositoryUnitTest extends TestCase
 {
@@ -26,7 +27,7 @@ class UserRepositoryUnitTest extends TestCase
         ];
         $mockResponseJson = json_encode($expectedResponseData, JSON_THROW_ON_ERROR);
         $mockResponse = new MockResponse($mockResponseJson, [
-            'http_code' => 200,
+            'http_code' => Response::HTTP_OK,
             'response_headers' => ['Content-Type: application/json'],
         ]);
         $httpClient = new MockHttpClient($mockResponse );
@@ -53,7 +54,7 @@ class UserRepositoryUnitTest extends TestCase
         ];
         $mockResponseJson = json_encode($expectedResponseData, JSON_THROW_ON_ERROR);
         $mockResponse = new MockResponse($mockResponseJson, [
-            'http_code' => 404,
+            'http_code' => Response::HTTP_NOT_FOUND,
             'response_headers' => ['Content-Type: application/json'],
         ]);
         $httpClient = new MockHttpClient($mockResponse);
@@ -76,7 +77,7 @@ class UserRepositoryUnitTest extends TestCase
         ];
         $mockResponseJson = json_encode($expectedResponseData, JSON_THROW_ON_ERROR);
         $mockResponse = new MockResponse($mockResponseJson, [
-            'http_code' => 201,
+            'http_code' => Response::HTTP_CREATED,
             'response_headers' => ['Content-Type: application/json'],
         ]);
         $httpClient = new MockHttpClient($mockResponse);
@@ -96,6 +97,7 @@ class UserRepositoryUnitTest extends TestCase
             $mockResponse->getRequestOptions()['headers']
         );
         self::assertSame($_ENV['BASE_URL'] .'/users', $mockResponse->getRequestUrl());
+        self::assertSame(12345, $userResponse->getId());
         self::assertSame('testName', $userResponse->getName());
         self::assertSame('testEmail@email.com', $userResponse->getEmail());
         self::assertSame('male', $userResponse->getGender());
@@ -112,7 +114,7 @@ class UserRepositoryUnitTest extends TestCase
         ];
         $mockResponseJson = json_encode($expectedResponseData, JSON_THROW_ON_ERROR);
         $mockResponse = new MockResponse($mockResponseJson, [
-            'http_code' => 422,
+            'http_code' => Response::HTTP_UNPROCESSABLE_ENTITY,
             'response_headers' => ['Content-Type: application/json'],
         ]);
         $httpClient = new MockHttpClient($mockResponse);
