@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserControllerTest extends ApiTestCase
 {
     private $user;
+    
     public function testFindUserOK(): void
     {
         $response = static::createClient()->request('GET', '/user/2971');
@@ -24,14 +25,30 @@ class UserControllerTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
     }
 
-     public function testCreateUserOK(): void 
+    public function testFindAllUserOK(): void
+    {
+        $response = static::createClient()->request('GET', '/user?page=1');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+    }
+
+    public function testFindAllUserKO(): void
+    {
+        $response = static::createClient()->request('GET', '/user?page=text');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+    }
+
+    public function testCreateUserOK(): void 
     {
        $response = static::createClient()->request(
             'POST',
             '/user',[
                 'json' => [
                     'name' => 'test',
-                    'email' => 'testCreateUser21@example.com',
+                    'email' => 'testCreateUser29@example.com',
                     'gender' => 'male',
                     'status' => 'active',
                 ],
@@ -44,7 +61,7 @@ class UserControllerTest extends ApiTestCase
         
     }
 
-        public function testCreateUserKO(): void 
+    public function testCreateUserKO(): void 
     {
         $response = static::createClient()->request(
             'POST',

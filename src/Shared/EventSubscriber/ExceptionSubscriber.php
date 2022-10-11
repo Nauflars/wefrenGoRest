@@ -17,7 +17,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $response = new Response();
         $response->setContent($message);
 
-        if ($exception instanceof HttpExceptionInterface) {
+        if ($exception instanceof HttpExceptionInterface) 
+        {
             $response->setStatusCode($exception->getStatusCode());
             $response->headers->set('Content-Type', 'application/json; charset=utf-8');
         } else {

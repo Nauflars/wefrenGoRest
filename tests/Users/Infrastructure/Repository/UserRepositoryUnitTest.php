@@ -47,6 +47,60 @@ class UserRepositoryUnitTest extends TestCase
         self::assertSame('active', $user->getStatus());
     }
 
+
+     public function testFindAll(): void
+    {    
+        $expectedResponseData = [
+            [
+                'id' => 1,
+                'name' => 'user1',
+                'email' => 'userEmail1@email.com',
+                'gender' => 'male',
+                'status' => 'active'
+            ],
+            [
+                'id' => 2,
+                'name' => 'user2',
+                'email' => 'userEmail2@email.com',
+                'gender' => 'female',
+                'status' => 'inactive'
+            ]
+        ];
+        $mockResponseJson = json_encode($expectedResponseData, JSON_THROW_ON_ERROR);
+        $mockResponse = new MockResponse($mockResponseJson, [
+            'http_code' => Response::HTTP_OK,
+            'response_headers' => ['Content-Type: application/json'],
+        ]);
+        $httpClient = new MockHttpClient($mockResponse );
+
+        $this->userRepository = new UserRepository($httpClient);
+        $users = $this->userRepository->findAll(1);
+
+        self::assertSame('GET', $mockResponse->getRequestMethod());
+        self::assertContains(
+            'Content-Type: application/json',
+            $mockResponse->getRequestOptions()['headers']
+        );
+        self::assertSame($_ENV['BASE_URL'] .'/users?page=1', $mockResponse->getRequestUrl());
+        foreach($users as $user) 
+        {
+            if($user->getId() == 1) 
+            {
+                self::assertSame('user1', $user->getName());
+                self::assertSame('userEmail1@email.com', $user->getEmail());
+                self::assertSame('male', $user->getGender());
+                self::assertSame('active', $user->getStatus());
+            }
+             if($user->getId() == 2) 
+            {
+                self::assertSame('user2', $user->getName());
+                self::assertSame('userEmail2@email.com', $user->getEmail());
+                self::assertSame('female', $user->getGender());
+                self::assertSame('inactive', $user->getStatus());
+            }
+        }
+       
+    }
     public function testFindKO(): void
     {    
         $expectedResponseData = [

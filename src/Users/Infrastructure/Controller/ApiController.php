@@ -14,7 +14,8 @@ class ApiController
 {
 	protected function validatePage(Request $request) 
 	{
-        if (!$request->query->get('page') || !is_numeric($request->query->get('page'))) {
+        if (!$request->query->get('page') || !is_numeric($request->query->get('page'))) 
+        {
         	$message = [
                 "field" => 'page',
                 "message" => 'is invalid'
@@ -26,7 +27,8 @@ class ApiController
     protected function validateUser(ValidatorInterface $validator, User $user)
     {
         $errors = $validator->validate($user);
-        if (count($errors) > 0) {
+        if (count($errors) > 0) 
+        {
             throw new HttpException( Response::HTTP_UNPROCESSABLE_ENTITY, $this->createErrorMessage($errors));
         }
     }
@@ -34,7 +36,8 @@ class ApiController
     private function createErrorMessage(ConstraintViolationListInterface $violations): string
     {
         $errors = [];
-        foreach ($violations as $violation) {
+        foreach ($violations as $violation) 
+        {
             $errors[] = [
                 "field" => $violation->getPropertyPath(),
                 "message" => $violation->getMessage()
@@ -59,7 +62,8 @@ class ApiController
     {
         $userArray = [];
 
-        foreach ($users as $user) {
+        foreach ($users as $user) 
+        {
             $userArray[] = $this->transform($user);
         }
 
@@ -70,11 +74,13 @@ class ApiController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) 
+        {
             return null;
         }
 
-        if ($data === null) {
+        if ($data === null) 
+        {
             return $request;
         }
 
