@@ -19,16 +19,4 @@ class CreateUser
 	{
 		return $this->userRepository->save($user);
 	}
-
-	public function transform(User $user): array
-    {
-        return [
-                'id'    => (int) $user->getId(),
-                'name' => (string) $user->getName(),
-                'email' => (string) $user->getEmail(),
-                'gender' => (string) $user->getGender(),
-                'status' => (string) $user->getStatus(),
-        ];
-    }
-
 }

@@ -10,7 +10,7 @@ class UserControllerTest extends ApiTestCase
     private $user;
     public function testFindUserOK(): void
     {
-        $response = static::createClient()->request('GET', '/user/3827');
+        $response = static::createClient()->request('GET', '/user/2971');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
@@ -31,7 +31,7 @@ class UserControllerTest extends ApiTestCase
             '/user',[
                 'json' => [
                     'name' => 'test',
-                    'email' => 'testCreateUser4@example.com',
+                    'email' => 'testCreateUser21@example.com',
                     'gender' => 'male',
                     'status' => 'active',
                 ],

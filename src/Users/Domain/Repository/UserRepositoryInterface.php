@@ -6,9 +6,9 @@ use App\Users\Domain\Entity\User;
 
 interface UserRepositoryInterface
 {
-    public function find($id);
-
-    public function findAll();
+    public function find(int $id): User;
 
     public function save(User $user): User;
+
+    public function findAll(int $page): array;
 }

@@ -17,7 +17,7 @@ class UserRepository implements UserRepositoryInterface
         $this->gorestClient = $httpClient;
     }
 
-    public function find($id) 
+    public function find(int $id): User
     {
         $url = $_ENV['BASE_URL'] . '/users/' . $id;
         $response =$this->callGorestApi($url, 'GET');
@@ -71,7 +71,25 @@ class UserRepository implements UserRepositoryInterface
         return $userResponse;
     }
 
-    private function callGorestApi(string $url, string $method, string $requestJson = '') {
+    public function findAll(int $page): array
+    {
+        $url = $_ENV['BASE_URL'] . '/users';
+        $query = ['page' => $page];
+        $queryJson = json_encode($query, JSON_THROW_ON_ERROR);
+        $response =$this->callGorestApi($url, 'GET','', $query);
+
+        $statusCode = $response->getStatusCode();
+        if($statusCode != Response::HTTP_OK) {
+            $message = $response->getContent(false);
+            throw new HttpException($statusCode, $message);
+        }
+        $responseJson = $response->getContent();
+        $usersArray = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
+        $users = $this->transformUsers($usersArray);
+        return $users;
+    }
+   
+    private function callGorestApi(string $url, string $method, string $requestJson = '', array $query = []) {
           try {
             $response = $this->gorestClient->request(
             $method,
@@ -82,6 +100,7 @@ class UserRepository implements UserRepositoryInterface
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer '.$_ENV['ACCESS_TOKEN'],
                 ],
+                'query' => $query,
                 'body' => $requestJson
             ]
             );
@@ -89,9 +108,20 @@ class UserRepository implements UserRepositoryInterface
             }
             return $response;
     }
-    public function findAll() 
+    private function transformUsers(array $arrayUsers): array
     {
-        
-    }
+        $users = [];
 
+        foreach ($arrayUsers as $arrayUser) {
+            $user = new User();
+            $user->setId($arrayUser["id"]);
+            $user->setName($arrayUser["name"]);
+            $user->setEmail($arrayUser["email"]);
+            $user->setGender($arrayUser["gender"]);
+            $user->setStatus($arrayUser["status"]);
+            $users[] = $user;
+        }
+
+        return $users;
+    }
 }

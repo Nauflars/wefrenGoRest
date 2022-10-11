@@ -6,7 +6,7 @@ use App\Users\Infrastructure\Repository\UserRepository;
 use App\Users\Domain\Entity\User;
 use Symfony\Component\HttpClient\HttpClient;
 
-class FindUser
+class FindAllUser
 {
 	private UserRepositoryInterface $userRepository;
 	
@@ -15,9 +15,9 @@ class FindUser
 		$this->userRepository = new UserRepository(HttpClient::create());
 	}
 
-	public function findUser(int $id): User
+	public function findAllUser(int $page): array
 	{
-		return $this->userRepository->find($id);
+		return $this->userRepository->findAll($page);
 	}
  
 }
