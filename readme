@@ -1,0 +1,25 @@
+wefrenGoRest project with symfony 5 and php 7.4
+
+* Environment Setup
+
+1) Needed tools
+- php 7.4
+- git clone https://github.com/Nauflars/wefrenGoRest.git
+- cd wefrenGoRest
+
+2) Environment configuration
+- cp .env .env.local (for local enfironment)
+- put the ACCESS_TOKEN in the .env.local file (can be generated
+ https://gorest.co.in/my-account/access-tokens)
+- cp phpunit.xml.dest phpunit.xml ( for testing )
+
+3) Application execution
+- composer install 
+- symfony server:start (to start the server in http://127.0.0.1:8000)
+- php bin/phpunit (to run all tests)
+
+4) API documentation
+* POST /user Create a new user
+* GET /user/{id} find user details by id
+* GET /user find All users
+
