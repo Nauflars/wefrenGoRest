@@ -11,18 +11,30 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class UserController extends ApiController
 {
     /**
      * @Route("/user/{id}", name="find_user", methods="GET")
      */
-    public function findUser($id, FindUser $findUser): JsonResponse
+    public function findUser($id, FindUser $findUser, CacheInterface  $userCache): JsonResponse
     {
-        $user = $findUser->findUser($id);
+        $user = $userCache->get($id, function (ItemInterface $item) 
+            use ($id, $findUser) {
+            $item->expiresAfter(3600);
+            $user = $findUser->findUser($id);
+            return $user;
+        });
+
         $userArray = $this->transform($user);
         return new JsonResponse($userArray, Response::HTTP_OK, []);
+
+       /* $user = $findUser->findUser($id);
+        $userArray = $this->transform($user);
+        return new JsonResponse($userArray, Response::HTTP_OK, []);*/
     }
 
     /**

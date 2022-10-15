@@ -15,5 +15,15 @@ framework:
         #app: cache.adapter.apcu
 
         # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+        pools:
+            user.cache:
+                adapter: cache.adapter.redis
+                provider: app.my_custom_redis_provider
+
+services:
+    app.my_custom_redis_provider:
+        class: \Redis
+        factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+        arguments:
+            - '%env(REDIS_URL)%'
+            - { retry_interval: 2, timeout: 10 }
