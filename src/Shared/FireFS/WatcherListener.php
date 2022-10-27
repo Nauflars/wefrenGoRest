@@ -7,10 +7,19 @@ use ElementaryFramework\FireFS\Listener\IFileSystemListener;
 
 // We use the FileSystemEvent class
 use ElementaryFramework\FireFS\Events\FileSystemEvent;
+use Symfony\Component\Messenger\MessageBus;
+use App\Shared\Message\SmsNotification;
 
 // Our listener
 class WatcherListener implements IFileSystemListener
 {
+    private MessageBus $bus;
+
+    public function __construct(MessageBus $bus) 
+    {
+        $this->bus = $bus;
+    }
+
     /**
      * Action executed on any event.
      * The returned boolean will define if the
@@ -28,15 +37,15 @@ class WatcherListener implements IFileSystemListener
 
         switch ($eventType) {
             case FileSystemEvent::EVENT_CREATE:
-                print "{$date}  -  [Created]  {$event->getPath()}\n";
+                $this->onCreated($event);
                 break;
 
             case FileSystemEvent::EVENT_MODIFY:
-                print "{$date}  -  [Updated]  {$event->getPath()}\n";
+                $this->onModified($event);
                 break;
 
             case FileSystemEvent::EVENT_DELETE:
-                print "{$date}  -  [Deleted]  {$event->getPath()}\n";
+                $this->onDeleted($event);
                 break;
         }
 
@@ -47,17 +56,22 @@ class WatcherListener implements IFileSystemListener
      * Action executed when a file/folder is created.
      */
     public function onCreated(FileSystemEvent $event)
-    { }
+    {
+         print "dispatch {$event->getPath()}\n";
+        $this->bus->dispatch(new SmsNotification("{$event->getPath()}"));
+    }
 
     /**
      * Action executed when a file/folder is updated.
      */
     public function onModified(FileSystemEvent $event)
-    { }
+    {
+     }
 
     /**
      * Action executed when a file/folder is deleted.
      */
     public function onDeleted(FileSystemEvent $event)
-    { }
+    { 
+    }
 }

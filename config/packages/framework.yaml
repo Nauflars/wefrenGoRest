@@ -30,6 +30,7 @@ framework:
                     'Content-Type': 'application/json'
                     'Authorization': 'Bearer %env(ACCESS_TOKEN)%'
 
+
 when@test:
     framework:
         test: true

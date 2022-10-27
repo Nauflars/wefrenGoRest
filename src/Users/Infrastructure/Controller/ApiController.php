@@ -46,30 +46,7 @@ class ApiController
  
         return json_encode($errors);
     }
-
-    protected function transform(User $user): array
-    {
-        return [
-                'id'    => (int) $user->getId(),
-                'name' => (string) $user->getName(),
-                'email' => (string) $user->getEmail(),
-                'gender' => (string) $user->getGender(),
-                'status' => (string) $user->getStatus(),
-        ];
-    }
-
-    protected function transformAll(array $users): array
-    {
-        $userArray = [];
-
-        foreach ($users as $user) 
-        {
-            $userArray[] = $this->transform($user);
-        }
-
-        return $userArray;
-    }
-
+    
     protected function transformJsonBody(Request $request)
     {
         $data = json_decode($request->getContent(), true);

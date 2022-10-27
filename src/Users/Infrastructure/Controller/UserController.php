@@ -14,27 +14,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
+use App\Users\Domain\Dto\Response\Transformer\UserResponseDtoTransformer;
 
 class UserController extends ApiController
 {
+    private UserResponseDtoTransformer $userResponseDtoTransformer;
+
+    public function __construct(UserResponseDtoTransformer $userResponseDtoTransformer)
+    {
+        $this->userResponseDtoTransformer = $userResponseDtoTransformer;
+    }
+
     /**
      * @Route("/user/{id}", name="find_user", methods="GET")
      */
-    public function findUser($id, FindUser $findUser, CacheInterface  $userCache): JsonResponse
+    public function findUser($id, FindUser $findUser): JsonResponse
     {
-        $user = $userCache->get($id, function (ItemInterface $item) 
-            use ($id, $findUser) {
-            $item->expiresAfter(3600);
-            $user = $findUser->findUser($id);
-            return $user;
-        });
-
-        $userArray = $this->transform($user);
-        return new JsonResponse($userArray, Response::HTTP_OK, []);
-
-       /* $user = $findUser->findUser($id);
-        $userArray = $this->transform($user);
-        return new JsonResponse($userArray, Response::HTTP_OK, []);*/
+        $user = $findUser->findUser($id);
+        $userDTO = $this->userResponseDtoTransformer->transformFromObject($user);
+        return new JsonResponse($userDTO, Response::HTTP_OK, []);
     }
 
     /**
@@ -46,8 +44,8 @@ class UserController extends ApiController
 
         $page = $request->query->get('page');
         $users = $findAllUser->findAllUser($page);
-        $usersArray = $this->transformAll($users);
-        return new JsonResponse($usersArray, Response::HTTP_OK, []);
+        $usersDTO = $this->userResponseDtoTransformer->transformFromObjects($users);
+        return new JsonResponse($usersDTO, Response::HTTP_OK, []);
     }
 
     /**
@@ -65,8 +63,8 @@ class UserController extends ApiController
 
         $this->validateUser($validator, $user);
 
-        $userResponse = $createUser->createUser($user);
-        $response = $this->transform($userResponse);
+        $usercreated = $createUser->createUser($user);
+        $response = $this->userResponseDtoTransformer->transformFromObject($usercreated);
 
         return new JsonResponse($response, Response::HTTP_CREATED , []);
     }
